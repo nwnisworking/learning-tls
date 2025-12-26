@@ -46,4 +46,5 @@ openssl s_client ^
   -psk_identity %psk_identity% ^
   -psk %psk_key% ^
   -tls1_2 ^
-  -cipher %cipher%
+  -cipher %cipher% ^
+  -no_etm

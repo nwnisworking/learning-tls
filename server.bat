@@ -36,6 +36,9 @@ openssl s_server ^
   -key %ec_key% ^
   -psk_identity %psk_identity% ^
   -psk %psk_key% ^
-  -tls1_2
+  -tls1_2 ^
+  -debug ^
+  -msg ^
+  -state
 
 echo Server started on port %server_port%
