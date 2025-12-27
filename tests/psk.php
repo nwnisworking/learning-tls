@@ -5,7 +5,7 @@ $psk = hex2bin("1a2b3c4d5e6f7081");
 $psk_len = strlen($psk);
 
 $socket = client_socket();
-$client_hello = client_hello_handshake(0xAE);
+$client_hello = client_hello_handshake(0xAE, 0x0303);
 $client_key_exchange = client_key_exchange_handshake("client");
 
 socket_write($socket, record_handshake($client_hello));
@@ -16,20 +16,11 @@ foreach(parse_record(socket_read($socket, 8192)) as $record){
     $body = $record['body'];
 
     switch($handshake_type){
-      case 2: // Server Hello
-        $server_hello = $body;
-        break;
-      case 14: // Server Hello Done
-        $server_hello_done = $body;
-        break;
+      case 2: $server_hello = $body; break;
+      case 14: $server_hello_done = $body; break;
     }
   }
 }
-
-// socket_write($socket, 
-//   record_handshake($client_key_exchange, 0x0303).
-//   change_cipher_spec_record()
-// );
 
 $client_random = substr($client_hello, 6, 32);
 $server_random = substr($server_hello, 6, 32);
@@ -94,7 +85,7 @@ echo "Decrypted Finished size: " . strlen($decrypted_finished) . PHP_EOL;
 
 socket_write($socket, 
   record_handshake($client_key_exchange, 0x0303).
-  change_cipher_spec_record().
+  record_change_cipher_spec(0x0303).
   record_handshake(
   $iv . $ciphertext, 0x0303)
 );

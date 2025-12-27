@@ -1,5 +1,4 @@
 <?php
-
 function record_handshake(string $data, int $version = 0x0301): string{
   return pack('Cn2a*', 0x16, $version, strlen($data), $data);
 }
@@ -126,9 +125,4 @@ function finished_handshake(string $side, string $master_secret, string $handsha
   );
 
   return pack('Na*', 20 << 24 | strlen($verify_data), $verify_data);
-}
-
-function tls_cbc_pad(string $data, int $block_size = 16): string {
-    $pad_len = $block_size - ((strlen($data) + 1) % $block_size);
-    return $data . str_repeat(chr($pad_len), $pad_len + 1);
 }
