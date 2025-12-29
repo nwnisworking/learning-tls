@@ -40,11 +40,21 @@ if "%mode%"=="0" (
 
 echo Using cipher(s): %cipher%
 
-@REM Launch the client
+@REM PSK version
+
+@REM openssl s_client ^
+@REM   -connect localhost:%server_port% ^
+@REM   -tls1_2 ^
+@REM   -cipher %cipher% ^
+@REM   -no_etm ^
+@REM   -psk_identity %psk_identity% ^
+@REM   -psk %psk_key% ^
+
 openssl s_client ^
   -connect localhost:%server_port% ^
-  -psk_identity %psk_identity% ^
-  -psk %psk_key% ^
   -tls1_2 ^
   -cipher %cipher% ^
-  -no_etm
+  -no_etm ^
+  -curves secp256r1 ^
+  -cipher ECDHE-RSA-AES128-GCM-SHA256 ^
+  -no_ticket

@@ -26,19 +26,22 @@ set ec_key=%key_dir%\ec.key
 set ec_cert=%key_dir%\ec.crt
 
 @REM Launch the server
+@REM PSK is removed from server side.
+@REM -psk_identity %psk_identity% ^
+@REM -psk %psk_key% ^
+
+@REM -cert %ec_cert% ^
+@REM -key %ec_key% ^
 openssl s_server ^
   -accept %server_port% ^
-  -psk_identity %psk_identity% ^
-  -psk %psk_key% ^
   -cert %rsa_cert% ^
   -key %rsa_key% ^
-  -cert %ec_cert% ^
-  -key %ec_key% ^
-  -psk_identity %psk_identity% ^
-  -psk %psk_key% ^
   -tls1_2 ^
   -debug ^
   -msg ^
-  -state
+  -state ^
+  -cipher ECDHE-RSA-AES128-GCM-SHA256 
+  
+@REM cipher does not exists when incorporating PSK
 
 echo Server started on port %server_port%

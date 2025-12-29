@@ -7,6 +7,10 @@ enum HandshakeType : int{
   case FINISHED = 20;
   case CLIENT_KEY_EXCHANGE = 16;
   case SERVER_HELLO_DONE = 14;
+
+  case CERTIFICATE = 11;
+
+  case SERVER_KEY_EXCHANGE = 12;
 }
 
 enum RecordType : int{
@@ -87,7 +91,7 @@ function handshake_finished(string $side, string $master_secret, string $message
 function handshake_client_key_exchange(string $identity): string{
   $len = strlen($identity);
 
-  return handshake_header(HandshakeType::CLIENT_KEY_EXCHANGE, pack('na*', $len, $identity));
+  return handshake_header(HandshakeType::CLIENT_KEY_EXCHANGE, pack('Ca*', $len, $identity));
 }
 
 /**
@@ -248,10 +252,6 @@ function unhex(string $hex): string{
   return hex2bin($hex);
 }
 
-// **Writing a TLS utils**
-// To simplify the approach, I opted to write the code as functions rather than utilizing classes. All I can say is it saves more production time and extrapolate complex processes while I test each of the utility components. 
-
-
-// ```c
-// struct {} 
-// ```
+function extension_header(int $type, ?string $body = null): string{
+  return pack('n2a*', $type, $body === null ? 0 : strlen($body), $body ?? '');
+}
